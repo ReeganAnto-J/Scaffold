@@ -7,7 +7,7 @@ buildr:
 run: build
 	@./bin/debug/snippet
 
-runr: build
+runr: buildr
 	@./bin/release/snippet
 
 cleanb:
