@@ -19,13 +19,29 @@ main.c:
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <ctype.h>
 
 int getCurretWorkingDir();
-int java_scaffold(const char* const);
+int info();
+int help();
+int verbose();
+int java_scaffold(const char* const, int flag);
 
 const int MAX_PATH = 255;
+const char* const version = "Version 0.0";
+enum bit8colors{
+    blue = 21,
+    green = 34,
+    cyan = 39,
+    purple = 56,
+    red = 196,
+    yellow = 226,
+    orange = 202,
+    grey = 244,
+    def = 0
+};
 
-int main(){
+int main(int argc, char** argv){
     // To get the directory on which the program is running on
     char currentDirectory[MAX_PATH];
     int err = getCurretWorkingDir(currentDirectory);
@@ -35,74 +51,105 @@ int main(){
         exit(1);
     }
 
-    // To print a cool opening title screen
-    {
-        // Ref: http://www.patorjk.com/software/taag/#p=display&h=0&v=3&f=Speed&t=SCAFFOLD
-        printf("\033[38;5;39m");
-        printf("________________________ ___________________________ ______ ________ \n");
-        printf("__  ___/__  ____/___    |___  ____/___  ____/__  __ \\___  / ___  __ \\\n");
-        printf("_____ \\ _  /     __  /| |__  /_    __  /_    _  / / /__  /  __  / / /\n");
-        printf("____/ / / /___   _  ___ |_  __/    _  __/    / /_/ / _  /____  /_/ / \n");
-        printf("/____/  \\____/   /_/  |_|/_/       /_/       \\____/  /_____//_____/  \n\n");
-
-        printf("        THE FASTEST WAY TO START DEVELOPING YOUR PROJECT\n\n");
-
-        printf("\033[0m");
-
-        printf("Choose a programming language:\n");
+    // To check if the user has entered sufficient number of flags
+    if(argc < 2){
+        int err =  info(def);
+        printf("Enter scaffold --help or scaffold -h for more details\n\n");
+        exit(err);
     }
 
-    // To choose what type of scaffolding the user needs
-    int ch;
-    printf("1. Java\n");
-    scanf("%d",&ch);
-    switch(ch){
-        case 1:
-            err = java_scaffold(currentDirectory);
-            printf("\033[0m");
-            if(err) exit(1);
-            break;
+    // To get single flag inputs
+    if(argc == 2){
+        if(argv[1][0] == '-' && strlen(argv[1]) == 2){
+            if(strlen(argv[1]) != 2){
+                printf("Invalid flag!\n");
+                exit(help());
+            }
+            if(argv[1][1] == 'h'){
+                exit(help());
+            } else if(argv[1][1] == 'i'){
+                exit(info(def));
+            }else if(argv[1][1] == 'v'){
+                printf("Project by Reegan Anto.J\n");
+                printf("%s\n",version);
+                exit(verbose());
+            }
+        }
+        if(strlen(argv[1]) > 2){
+            if(strcmp(argv[1],"--java") == 0){
+                info(green);
+                return(java_scaffold(currentDirectory, 0));
+            }
+        }
+        printf("Check below for all valid flags\n");
+        int err = help();
+        exit(err);
     }
+
+    // To get double flag inputs
 }
 
-int java_scaffold(const char* const){
-    FILE *fp;
+int info(int code){
+    // To print a cool opening title screen
+    // Ref: http://www.patorjk.com/software/taag/#p=display&h=0&v=3&f=Speed&t=SCAFFOLD
+    printf("\033[38;5;%dm",code);
+    if(code == def)printf("\033[0m");
+    printf("________________________ ___________________________ ______ ________ \n");
+    printf("__  ___/__  ____/___    |___  ____/___  ____/__  __ \\___  / ___  __ \\\n");
+    printf("_____ \\ _  /     __  /| |__  /_    __  /_    _  / / /__  /  __  / / /\n");
+    printf("____/ / / /___   _  ___ |_  __/    _  __/    / /_/ / _  /____  /_/ / \n");
+    printf("/____/  \\____/   /_/  |_|/_/       /_/       \\____/  /_____//_____/  \n\n");
 
-    // To print a cool java ascii script
-    {
-        // Ref: http://www.patorjk.com/software/taag/#p=display&f=Impossible&t=JAVA
-        printf("\033[38;5;35m");
-        printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
-        printf("|                 _        _      _          _       _              |\n");
-        printf("|                /\\ \\     / /\\   /\\ \\    _ / /\\     / /\\            |\n");
-        printf("|                \\ \\ \\   / /  \\  \\ \\ \\  /_/ / /    / /  \\           |\n");
-        printf("|                /\\ \\_\\ / / /\\ \\  \\ \\ \\ \\___\\/    / / /\\ \\          |\n");
-        printf("|               / /\\/_// / /\\ \\ \\ / / /  \\ \\ \\   / / /\\ \\ \\         |\n");
-        printf("|      _       / / /  / / /  \\ \\ \\\\ \\ \\   \\_\\ \\ / / /  \\ \\ \\        |\n");
-        printf("|     /\\ \\    / / /  / / /___/ /\\ \\\\ \\ \\  / / // / /___/ /\\ \\       |\n");
-        printf("|     \\ \\_\\  / / /  / / /_____/ /\\ \\\\ \\ \\/ / // / /_____/ /\\ \\      |\n");
-        printf("|     / / /_/ / /  / /_________/\\ \\ \\\\ \\ \\/ // /_________/\\ \\ \\     |\n");
-        printf("|    / / /__\\/ /  / / /_       __\\ \\_\\\\ \\  // / /_       __\\ \\_\\    |\n");
-        printf("|    \\/_______/   \\_\\___\\     /____/_/ \\_\\/ \\_\\___\\     /____/_/    |\n");
-        printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
-        printf("\033[0m");
-    }
-    // To check if jdk exists
-    sleep(2); // SLEEP
+    printf("        THE FASTEST WAY TO START DEVELOPING YOUR PROJECT\n");
+    printf("                           Reegan Anto.J\n");
+    printf("                                v0.0\n\n");
+    printf("\033[0m");
+    return 0;
+}
+
+int help(){
+    printf("%s\n",version);
+    printf("Basic flags:\n");
+    printf("-i info\n");
+    printf("-h help\n");
+    printf("-v verbose\n\n");
+    printf("Use these tags for more info on the project:\n");
+    printf("--java To list all the java project types\n");
+    printf("--cpp To list all the java project types\n");
+    printf("--python To list all the java project types\n");
+    printf("--go To list all the java project types\n");
+    printf("--rust To list all the java project types\n");
+    printf("--js To list all the javascript project types\n");
+    return 0;
+}
+
+int verbose(){
+    return 0;
+}
+
+int java_scaffold(const char* const, int flag){
+    enum flags{
+        list
+    };
+
+    FILE *fp;
     printf("Testing for JDK in path: ");
     fp = popen("java --version", "r");
     if(fp == NULL){
-        printf("\033[31;1mCannot find java path!\nExiting...\033[0m");
+        printf("\033[38;5;%d;1mCannot find JDK path!\nExiting...\033[0m",red);
         return 1;
     }
     char jdk_path[MAX_PATH];
     fgets(jdk_path, MAX_PATH, fp);
     pclose(fp);
-    printf("%s\n",jdk_path); 
-    sleep(1); // SLEEP
-    printf("\033[32;1m");
-    printf("\aJDK available ┗(^o^ )┓三\n\n");
-    printf("\033[0m");
+    printf("%s\n",jdk_path);
+    printf("JDK available ┗(^o^ )┓三\n\n");
+
+    if(flag == list){
+        printf("Add these flags a the end for additional functions:\n");
+        printf("--base A base java class\n");
+    }
+
     return 0;
 }
 
