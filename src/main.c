@@ -21,7 +21,7 @@ main.c:
 #include <string.h>
 #include <ctype.h>
 
-int getCurretWorkingDir();
+int getCurretWorkingDir(char* pwd);
 int info();
 int help();
 int verbose();
@@ -76,6 +76,9 @@ int main(int argc, char** argv){
             }
         }
         if(strlen(argv[1]) > 2){
+            if(strcmp(argv[1],"--help") == 0){
+                exit(help());
+            }
             if(strcmp(argv[1],"--java") == 0){
                 info(green);
                 return(java_scaffold(currentDirectory, 0));
@@ -87,6 +90,9 @@ int main(int argc, char** argv){
     }
 
     // To get double flag inputs
+
+    // To set back terminal to default
+    printf("\033[0m");
 }
 
 int info(int code){
@@ -110,16 +116,16 @@ int info(int code){
 int help(){
     printf("%s\n",version);
     printf("Basic flags:\n");
-    printf("-i info\n");
-    printf("-h help\n");
-    printf("-v verbose\n\n");
+    printf("\033[1m-i\033[0m info\n");
+    printf("\033[1m-h\033[0m help\n");
+    printf("\033[1m-v\033[0m verbose\n\n");
     printf("Use these tags for more info on the project:\n");
-    printf("--java To list all the java project types\n");
-    printf("--cpp To list all the java project types\n");
-    printf("--python To list all the java project types\n");
-    printf("--go To list all the java project types\n");
-    printf("--rust To list all the java project types\n");
-    printf("--js To list all the javascript project types\n");
+    printf("\033[1m--java\033[0m To list all the java project types\n");
+    printf("\033[1m--cpp\033[0m To list all the java project types\n");
+    printf("\033[1m--python\033[0m To list all the java project types\n");
+    printf("\033[1m--go\033[0m To list all the java project types\n");
+    printf("\033[1m--rust\033[0m To list all the java project types\n");
+    printf("\033[1m--js\033[0m To list all the javascript project types\n");
     return 0;
 }
 
@@ -136,7 +142,7 @@ int java_scaffold(const char* const, int flag){
     printf("Testing for JDK in path: ");
     fp = popen("java --version", "r");
     if(fp == NULL){
-        printf("\033[38;5;%d;1mCannot find JDK path!\nExiting...\033[0m",red);
+        printf("\033[38;5;%d;1mCannot find JDK path!\nExiting...\n\033[0m",red);
         return 1;
     }
     char jdk_path[MAX_PATH];
