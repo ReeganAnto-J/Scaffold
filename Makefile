@@ -1,15 +1,19 @@
 CC = gcc
+
 BUILD_FLAGS = -O0 -Wall
 RELEASE_FLAGS = -Os
-SOURCE_PATH = ./src/*.c
+
+SOURCE_FILES = ./src/*.c
+LIB_FILES = ./src/lib/*.c
+
 DEBUG_PATH = ./bin/debug/scaffold
 RELEASE_PATH = ./bin/release/scaffold
 
-EXECUTION_FLAGS =
+EXECUTION_FLAGS = --java --console
 
 build:
-	@$(CC) $(BUILD_FLAGS) $(SOURCE_PATH) -o $(DEBUG_PATH)
-	@$(CC) $(RELEASE_FLAGS) $(SOURCE_PATH) -o $(RELEASE_PATH)
+	@$(CC) $(BUILD_FLAGS) $(SOURCE_FILES) $(LIB_FILES) -o $(DEBUG_PATH)
+	@$(CC) $(RELEASE_FLAGS) $(SOURCE_FILES) $(LIB_FILES) -o $(RELEASE_PATH)
 
 # To run the debug version of the software
 run: build
