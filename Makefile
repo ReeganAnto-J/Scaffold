@@ -26,4 +26,3 @@ deploy: build
 clean:
 	rm $(DEBUG_PATH)
 	rm $(RELEASE_PATH)
-

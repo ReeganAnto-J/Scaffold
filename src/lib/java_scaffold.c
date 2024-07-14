@@ -37,7 +37,7 @@ int javaScaffold(const char* const currentDirectory, int flag, struct bit8colors
     // Listing all the project types that can be made with java
     if(flag == java_list){
         printf("Add these flags a the end to build:\n");
-        printf("--base A base java class\n");
+        printf("--console A simple java console application\n");
     }
 
     // To build console project
