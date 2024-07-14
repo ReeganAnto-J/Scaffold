@@ -10,6 +10,7 @@ extern int MAX_PATH;
 extern int MAX_NAME;
 extern int MAX_DIR;
 
+void java_gitignore(const char* const, const char* const, struct bit8colors);
 int _javaScaffold_console(const char* const, struct bit8colors);
 
 // Scaffolds java project takes the directory to be created, the type of project and ansi color object
@@ -115,36 +116,7 @@ int _javaScaffold_console(const char* const currentDirectory, struct bit8colors 
     }
 
     // To check for git to initialize and add .gitignore
-    printf("Checking for git... \n");
-    fptr = popen("git --version", "r");
-    if(fptr == NULL){
-        printf("\033[38;5;%d;1mCannot find git path!\nSkipping git initialization...\n\n\033[0m",colors.red);
-        pclose(fptr);
-    } else {
-        fgets(packagePath, MAX_PATH, fptr);
-        pclose(fptr);
-        printf("%s",packagePath);
-        printf("Git available, proceeding initialization... \n");
-        strcpy(packagePath,"cd ./");
-        strcat(packagePath,projname);
-        strcat(packagePath,";git init");
-        err = system(packagePath);
-        if(!err){
-            printf("Adding gitignore... \n");
-            strcpy(projdir, tmp);
-            strcat(projdir,".gitignore");
-            fptr = fopen(projdir,"w");
-            if(fptr != NULL){
-                fprintf(fptr, "# Compiled class file\n*.class\n\n# Log file\n*.log\n\n");
-                fprintf(fptr, "# BlueJ files\n*.ctxt\n\n# Mobile Tools for Java (J2ME)\n.mtj.tmp/\n\n");
-                fprintf(fptr, "# Package Files #\n*.jar\n*.war\n*.nar\n*.ear\n*.zip\n*.tar.gz\n*.rar\n\n");
-                fprintf(fptr, "# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml\n");
-                fprintf(fptr, "hs_err_pid*\nreplay_pid*");
-                fclose(fptr);
-                printf("\033[38;5;%dmDone\n\n\033[0m",colors.green);
-            } else printf("\033[38;5;%d;1mUnable to add gitignore!\nSkipping...\n\n\033[0m", colors.red);
-        } else  printf("\033[38;5;%d;1mUnable to initialize git!\nSkipping...\n\n\033[0m",colors.red);
-    }
+    java_gitignore(projname, tmp, colors);
 
     // To check for make and build makefile
     char make_ready = 0;
@@ -194,4 +166,46 @@ int _javaScaffold_console(const char* const currentDirectory, struct bit8colors 
     printf("\033[1mALL CLEAR\n\n\033[0m");
     
     return 0;
+}
+
+void java_gitignore(const char* const projname, const char* const tmp, struct bit8colors colors){
+    // To check for git to initialize and add .gitignore
+
+    FILE* fptr;
+
+    char projdir[MAX_DIR];
+    char packagePath[MAX_PATH];
+
+    int err;
+
+    printf("Checking for git... \n");
+    fptr = popen("git --version", "r");
+    if(fptr == NULL){
+        printf("\033[38;5;%d;1mCannot find git path!\nSkipping git initialization...\n\n\033[0m",colors.red);
+        pclose(fptr);
+    } else {
+        fgets(packagePath, MAX_PATH, fptr);
+        pclose(fptr);
+        printf("%s",packagePath);
+        printf("Git available, proceeding initialization... \n");
+        strcpy(packagePath,"cd ./");
+        strcat(packagePath,projname);
+        strcat(packagePath,";git init");
+        err = system(packagePath);
+        if(!err){
+            printf("Adding gitignore... \n");
+            strcpy(projdir, tmp);
+            strcat(projdir,".gitignore");
+            fptr = fopen(projdir,"w");
+            if(fptr != NULL){
+                fprintf(fptr, "# Compiled class file\n*.class\n\n# Log file\n*.log\n\n");
+                fprintf(fptr, "# BlueJ files\n*.ctxt\n\n# Mobile Tools for Java (J2ME)\n.mtj.tmp/\n\n");
+                fprintf(fptr, "# Package Files #\n*.jar\n*.war\n*.nar\n*.ear\n*.zip\n*.tar.gz\n*.rar\n\n");
+                fprintf(fptr, "# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml\n");
+                fprintf(fptr, "hs_err_pid*\nreplay_pid*");
+                fclose(fptr);
+                printf("\033[38;5;%dmDone\n\n\033[0m",colors.green);
+            } else printf("\033[38;5;%d;1mUnable to add gitignore!\nSkipping...\n\n\033[0m", colors.red);
+        } else  printf("\033[38;5;%d;1mUnable to initialize git!\nSkipping...\n\n\033[0m",colors.red);
+    }
 }
