@@ -1,6 +1,7 @@
 #include <stdio.h> // popen()
 #include <sys/types.h> //mkdir()
 #include <sys/stat.h> //mkdir()
+#include <stdlib.h> // system()
 #include <string.h>
 
 #include "../ansicolor.h"
@@ -110,13 +111,33 @@ int _javaScaffold_console(const char* const currentDirectory, struct bit8colors 
     printf("Checking for git... \n");
     fptr = popen("git --version", "r");
     if(fptr == NULL){
-        printf("\033[38;5;%d;1mCannot find git path!\nSkipping git initialization...\n\033[0m",colors.red);
-        return 0;
+        printf("\033[38;5;%d;1mCannot find git path!\nSkipping git initialization...\n\n\033[0m",colors.red);
+        pclose(fptr);
+    } else {
+        fgets(packagePath, MAX_PATH, fptr);
+        pclose(fptr);
+        printf("%s",packagePath);
+        printf("Git available, proceeding initialization... \n");
+        strcpy(packagePath,"cd ./");
+        strcat(packagePath,projname);
+        strcat(packagePath,";git init");
+        err = system(packagePath);
+        if(!err){
+            printf("Adding gitignore... \n");
+            strcpy(projdir, tmp);
+            strcat(projdir,".gitignore");
+            fptr = fopen(projdir,"w");
+            if(fptr != NULL){
+                fprintf(fptr, "# Compiled class file\n*.class\n\n# Log file\n*.log\n\n");
+                fprintf(fptr, "# BlueJ files\n*.ctxt\n\n# Mobile Tools for Java (J2ME)\n.mtj.tmp/\n\n");
+                fprintf(fptr, "# Package Files #\n*.jar\n*.war\n*.nar\n*.ear\n*.zip\n*.tar.gz\n*.rar\n\n");
+                fprintf(fptr, "# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml\n");
+                fprintf(fptr, "hs_err_pid*\nreplay_pid*");
+                fclose(fptr);
+                printf("\033[38;5;%dmDone\n\n\033[0m",colors.green);
+            } else printf("\033[38;5;%d;1mUnable to add gitignore!\nSkipping...\n\n\033[0m", colors.red);
+        } else  printf("\033[38;5;%d;1mUnable to initialize git!\nSkipping...\n\n\033[0m",colors.red);
     }
-    fgets(packagePath, MAX_PATH, fptr);
-    pclose(fptr);
-    printf("%s",packagePath);
-    printf("Git available, proceeding initialization... \n");
 
     return 0;
 }
