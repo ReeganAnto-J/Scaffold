@@ -85,7 +85,10 @@ int _javaScaffold_console(const char* const currentDirectory, struct bit8colors 
     strcpy(projdir,tmp);
     strcat(projdir,"lib");
     err = mkdir(projdir, 0775);
-    if(err) printf("\n\033[38;5;%d;1mUnable to bin directory\n\n\033[0m",colors.red);
+    if(err){
+        printf("\n\033[38;5;%d;1mUnable to bin directory\nExiting...\n\n\033[0m",colors.red);
+        return 0;
+    } 
     else printf("Add your external libraries in lib dir\n\n");
 
     // To build main.java
@@ -101,11 +104,15 @@ int _javaScaffold_console(const char* const currentDirectory, struct bit8colors 
         fprintf(fptr,"import java.util.regex.*;\n\n");
         fprintf(fptr,"public class Main {\n");
         fprintf(fptr,"\tpublic static Scanner sc = new Scanner(System.in);\n");
-        fprintf(fptr,"\tpublic static void main(String args[] ) {\n\n");
+        fprintf(fptr,"\tpublic static void main(String args[] ) {\n");
+        fprintf(fptr,"\t\tSystem.out.println(\"Hello, World!\");\n");
         fprintf(fptr,"\t}\n}\n");
         fclose(fptr);
         printf("\033[38;5;%dmDone\n\n\033[0m",colors.green);
-    } else printf("\n\033[38;5;%d;1mUnable to create Main.java\n\n\033[0m",colors.red);
+    } else {
+        printf("\n\033[38;5;%d;1mUnable to create Main.java\nExiting...\n\n\033[0m",colors.red);
+        return 0;
+    }
 
     // To check for git to initialize and add .gitignore
     printf("Checking for git... \n");
@@ -139,5 +146,52 @@ int _javaScaffold_console(const char* const currentDirectory, struct bit8colors 
         } else  printf("\033[38;5;%d;1mUnable to initialize git!\nSkipping...\n\n\033[0m",colors.red);
     }
 
+    // To check for make and build makefile
+    char make_ready = 0;
+    printf("Checking for make... \n");
+    fptr = popen("make --version", "r");
+    if(fptr == NULL){
+        printf("\033[38;5;%d;1mCannot find make path!\nSkipping make initialization...\n\n\033[0m",colors.red);
+        pclose(fptr);
+    } else {
+        fgets(packagePath, MAX_PATH, fptr);
+        pclose(fptr);
+        printf("%s",packagePath);
+        printf("Make available, creating makefile... \n");
+        strcpy(projdir, tmp);
+        strcat(projdir,"Makefile");
+        fptr = fopen(projdir,"w");
+        if(fptr != NULL){
+            fprintf(fptr, "OBJ_DIR = ./obj/\n");
+            fprintf(fptr, "LIB_DIR = ./lib/\n\n");
+            fprintf(fptr, "run:\n\t@java Main.java\n\n");
+            fprintf(fptr, "clean:\n\trm $(OBJ_DIR)*.class");
+            fclose(fptr);
+            make_ready = 1;
+            printf("\033[38;5;%dmDone\n\n\033[0m",colors.green);
+        } else printf("\033[38;5;%d;1mUnable to build makefile!\nSkipping...\n\n\033[0m", colors.red);
+    }
+
+    printf("\033[1mPerforming final tests on project...\033[0m\n");
+    if(make_ready){
+        strcpy(packagePath,"cd ./");
+        strcat(packagePath,projname);
+        strcat(packagePath,";make run");
+        err = system(packagePath);
+        if(err){
+            printf("\033[38;5;%d;1mCannot verify project...\033[0m\n",colors.red);
+        } else printf("\033[38;5;%d;1m\nProject ready!\n\033[0m",colors.green);
+    } else {
+        strcpy(packagePath,"cd ./");
+        strcat(packagePath,projname);
+        strcat(packagePath,";java Main.java");
+        err = system(packagePath);
+        if(err){
+            printf("\033[38;5;%d;1mCannot verify project...\033[0m\n",colors.red);
+        } else printf("\033[38;5;%d;1m\nProject ready!\n\033[0m",colors.green);
+    }
+
+    printf("\033[1mALL CLEAR\n\n\033[0m");
+    
     return 0;
 }
