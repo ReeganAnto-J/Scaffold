@@ -3,8 +3,6 @@
 Project Name: Programming Environment Scaffolder
 Project Author: Reegan Anto.J
 Version: 0.0
-Date Created: 11th July 2024
-Last Modified: 14th July 2024
 
 Intro:
     This project is used to setup project environment for the programming language
