@@ -39,7 +39,7 @@ int goScaffold(const char* const currentDirectory, int flag, struct bit8colors c
     // Listing all the project types that can be made with go
     if(flag == go_list){
         printf("Add these flags a the end to build:\n");
-        printf("--console To build go console app\n");
+        printf("\033[1m--console\033[0m To build go console app\n");
     }
 
     // To build console project

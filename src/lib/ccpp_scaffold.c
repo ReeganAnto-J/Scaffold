@@ -41,8 +41,8 @@ int ccppScaffold(const char* const currentDirectory, int flag, struct bit8colors
     // Listing all the project types that can be made with c/c++
     if(flag == ccpp_list){
         printf("Add these flags a the end to build:\n");
-        printf("--c-console To build c console app\n");
-        printf("--cpp-console To build c++ console app\n");
+        printf("\033[1m--c-console\033[0m To build c console app\n");
+        printf("\033[1m--cpp-console\033[0m To build c++ console app\n");
     }
 
     // To build console project

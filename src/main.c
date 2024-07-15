@@ -27,9 +27,9 @@ int info();
 int help();
 int verbose();
 
-const int MAX_DIR = 511; // Max length allowed for any directory
-const int MAX_PATH = 255; // Max length allowed for path
-const int MAX_NAME = 31; // Max length allowed for project name
+const int MAX_DIR = 512; // Max length allowed for any directory
+const int MAX_PATH = 256; // Max length allowed for path
+const int MAX_NAME = 32; // Max length allowed for project name
 const char* const version = "Version 0.0";
 
 int main(int argc, char** argv){
@@ -60,7 +60,7 @@ int main(int argc, char** argv){
     // To check if the user has entered sufficient number of flags
     if(argc < 2){
         int err =  info(colors.def);
-        printf("Enter scaffold --help or scaffold -h for more details\n\n");
+        printf("Enter scaffold \033[1m--help\033[0m or scaffold \033[1m-h\033[0m for more details\n\n");
         printf("\033[0m");
         return err;
     }
