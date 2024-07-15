@@ -101,6 +101,11 @@ int main(int argc, char** argv){
                 printf("\033[0m");
                 return ccppScaffold(currentDirectory, 0, colors);
             }
+            if(strcmp(argv[1],"--go") == 0){
+                info(colors.blue);
+                printf("\033[0m");
+                return goScaffold(currentDirectory, 0, colors);
+            }
         }
         printf("Check below for all valid flags\n");
         int err = help();
@@ -110,9 +115,17 @@ int main(int argc, char** argv){
 
     // To get double flag inputs
     if(argc == 3){
+        if(strcmp(argv[1],"--java") == 0 && strcmp(argv[2],"--help") == 0){
+            info(colors.green);
+            return javaScaffold(currentDirectory, 0, colors);
+        }
         if(strcmp(argv[1],"--java") == 0 && strcmp(argv[2],"--console") == 0){
             info(colors.green);
             return javaScaffold(currentDirectory, 1, colors);
+        }
+        if(strcmp(argv[1],"--cc") == 0 && strcmp(argv[2],"--help") == 0){
+            info(colors.blue);
+            return ccppScaffold(currentDirectory, 0, colors);
         }
         if(strcmp(argv[1],"--cc") == 0 && strcmp(argv[2],"--c-console") == 0){
             info(colors.blue);
@@ -121,6 +134,14 @@ int main(int argc, char** argv){
         if(strcmp(argv[1],"--cc") == 0 && strcmp(argv[2],"--cpp-console") == 0){
             info(colors.blue);
             return ccppScaffold(currentDirectory, 2, colors);
+        }
+        if(strcmp(argv[1],"--go") == 0 && strcmp(argv[2],"--help") == 0){
+            info(colors.cyan);
+            return goScaffold(currentDirectory, 0, colors);
+        }
+        if(strcmp(argv[1],"--go") == 0 && strcmp(argv[2],"--console") == 0){
+            info(colors.cyan);
+            return goScaffold(currentDirectory, 1, colors);
         }
         printf("Check below for all valid flags\n");
         int err = help();
@@ -162,8 +183,6 @@ int help(){
     printf("\033[1m--cc\033[0m To list all the c/c++ project types\n");
     printf("\033[1m--python\033[0m To list all the python project types\n");
     printf("\033[1m--go\033[0m To list all the go project types\n");
-    printf("\033[1m--rust\033[0m To list all the rust project types\n");
-    printf("\033[1m--js\033[0m To list all the javascript project types\n");
     return 0;
 }
 

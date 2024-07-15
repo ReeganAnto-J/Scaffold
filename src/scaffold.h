@@ -3,5 +3,6 @@
 
 int javaScaffold(const char* const, int, struct bit8colors);
 int ccppScaffold(const char* const, int, struct bit8colors);
+int goScaffold(const char* const, int, struct bit8colors);
 
 #endif

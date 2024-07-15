@@ -15,9 +15,9 @@ void ccpp_gitignore(const char* const, const char* const, struct bit8colors);
 int _cScaffold_console(const char* const, struct bit8colors);
 int _cppScaffold_console(const char* const, struct bit8colors);
 
-// Scaffolds java project takes the directory to be created, the type of project and ansi color object
+// Scaffolds c/cpp project takes the directory to be created, the type of project and ansi color object
 int ccppScaffold(const char* const currentDirectory, int flag, struct bit8colors colors){
-    enum flags{// Types of projects that can be built using java
+    enum flags{// Types of projects that can be built using c/c++
         ccpp_list,
         c_console,
         cpp_console
@@ -26,7 +26,7 @@ int ccppScaffold(const char* const currentDirectory, int flag, struct bit8colors
     FILE *fptr;
     char package_path[MAX_PATH];
 
-    // Checking if jdk exists
+    // Checking if GCC exists
     printf("Testing for GCC in path: \n");
     fptr = popen("gcc --version", "r");
     if(fptr == NULL){
@@ -38,7 +38,7 @@ int ccppScaffold(const char* const currentDirectory, int flag, struct bit8colors
     printf("%s\n",package_path);
     printf("\033[38;5;%dmGCC available (-‿◦☀)\n\n\033[0m",colors.blue);
 
-    // Listing all the project types that can be made with java
+    // Listing all the project types that can be made with c/c++
     if(flag == ccpp_list){
         printf("Add these flags a the end to build:\n");
         printf("--c-console To build c console app\n");

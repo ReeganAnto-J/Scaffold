@@ -9,7 +9,7 @@ LIB_FILES = ./src/lib/*.c
 DEBUG_PATH = ./bin/debug/scaffold
 RELEASE_PATH = ./bin/release/scaffold
 
-EXECUTION_FLAGS = --java --console
+EXECUTION_FLAGS = --cc --help
 
 build:
 	@$(CC) $(BUILD_FLAGS) $(SOURCE_FILES) $(LIB_FILES) -o $(DEBUG_PATH)
@@ -17,7 +17,7 @@ build:
 
 # To run the debug version of the software
 run: build
-	@$(DEBUG_PATH) $(EXECUTION_FLAGS)
+	$(DEBUG_PATH) $(EXECUTION_FLAGS)
 
 # To run the release version of the software
 deploy: build
