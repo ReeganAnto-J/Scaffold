@@ -192,8 +192,9 @@ int help(){
 int verbose(){
     // To elaborate on this project
     printf("\nThis program builds the base folder and file structure for your project\n");
-    printf("Languages supported:\n\tC/C++\n\tJava\n\tGO\n\n");
-    printf("Enter \033[1mscaffold --help\033[0m for further details");
+    printf("\nLanguages supported:\n\tC/C++ :: gcc\n\tJava :: JDK\n\tGO :: GC\n");
+    printf("Note: Make sure to have the required compiler for each project type\n\n");
+    printf("Enter \033[1mscaffold --help\033[0m for further details\n\n");
     return 0;
 }
 
