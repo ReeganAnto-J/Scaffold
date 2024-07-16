@@ -9,7 +9,7 @@ LIB_FILES = ./src/lib/*.c
 DEBUG_PATH = ./bin/debug/scaffold
 RELEASE_PATH = ./bin/release/scaffold
 
-EXECUTION_FLAGS = -v
+EXECUTION_FLAGS = --help
 
 build:
 	@$(CC) $(BUILD_FLAGS) $(SOURCE_FILES) $(LIB_FILES) -o $(DEBUG_PATH)
