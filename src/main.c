@@ -179,7 +179,6 @@ int help(){
     printf("Use these tags for more info on the project:\n");
     printf("\033[1m--java\033[0m To list all the java project types\n");
     printf("\033[1m--cc\033[0m To list all the c/c++ project types\n");
-    printf("\033[1m--python\033[0m To list all the python project types\n");
     printf("\033[1m--go\033[0m To list all the go project types\n");
     return 0;
 }
