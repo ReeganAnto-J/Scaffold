@@ -78,19 +78,10 @@ int _javaScaffold_console(const char* const currentDirectory, struct bit8colors 
     strcat(tmp,"/");
 
     // To build directories
-    printf("Building obj and bin directories...\n");
-    strcpy(projdir,tmp);
-    strcat(projdir,"obj");
-    err = mkdir(projdir, 0775);
-    if(err) printf("\n\033[38;5;%d;1mUnable to obj directory\n\n\033[0m",colors.red);
-    else printf("obj folder created, place your compiled files in obj dir\n");
     strcpy(projdir,tmp);
     strcat(projdir,"lib");
     err = mkdir(projdir, 0775);
-    if(err){
-        printf("\n\033[38;5;%d;1mUnable to bin directory\nExiting...\n\n\033[0m",colors.red);
-        return 0;
-    } 
+    if(err) printf("\n\033[38;5;%d;1mUnable to lib directory\nSkipping...\n\n\033[0m",colors.red); 
     else printf("Add your external libraries in lib dir\n\n");
 
     // To build main.java
