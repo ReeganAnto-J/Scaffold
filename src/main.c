@@ -2,7 +2,7 @@
 
 Project Name: Programming Environment Scaffolder
 Project Author: Reegan Anto.J
-Version: 0.0
+Version: 1.0
 
 Intro:
     This project is used to setup project environment for the programming language
@@ -33,7 +33,7 @@ int verbose();
 const int MAX_DIR = 512; // Max length allowed for any directory
 const int MAX_PATH = 256; // Max length allowed for path
 const int MAX_NAME = 32; // Max length allowed for project name
-const char* const version = "Version 0.0";
+const char* const version = "Version 1.0";
 
 int main(int argc, char** argv){
     // Calls the nessary scaffold
@@ -170,7 +170,7 @@ int info(int code){
 
     printf("        THE FASTEST WAY TO START DEVELOPING YOUR PROJECT\n");
     printf("                           Reegan Anto.J\n");
-    printf("                                v0.0\n\n");
+    printf("                                v1.0\n\n");
     printf("\033[0m");
     return 0;
 }
@@ -192,7 +192,7 @@ int help(){
 int verbose(){
     // To elaborate on this project
     printf("\nThis program builds the base folder and file structure for your project\n");
-    printf("\nLanguages supported:\n\tC/C++ :: gcc\n\tJava :: JDK\n\tGO :: GC\n");
+    printf("\nLanguages supported:\n\tC/C++ :: gcc\n\tJava  :: JDK\n\tGO    :: GC\n");
     printf("Note: Make sure to have the required compiler for each project type\n\n");
     printf("Enter \033[1mscaffold --help\033[0m for further details\n\n");
     return 0;
