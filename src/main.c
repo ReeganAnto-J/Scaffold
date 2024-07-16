@@ -8,8 +8,13 @@ Intro:
     This project is used to setup project environment for the programming language
     and the type of project structure the user requires
 
+Languages Supported:
+    C/C++, Java, GO
+
 main.c:
     This is the root file of this project
+    This file decides on what project the user needs and redirect to the specified
+    project
 
 \***********************************************************************************/
 
@@ -31,7 +36,7 @@ const int MAX_NAME = 32; // Max length allowed for project name
 const char* const version = "Version 0.0";
 
 int main(int argc, char** argv){
-
+    // Calls the nessary scaffold
     struct bit8colors colors; // Stores the ANSI code for colors
     colors.blue = 21;
     colors.green = 34;
@@ -171,6 +176,7 @@ int info(int code){
 }
 
 int help(){
+    // To list all the base options offered
     printf("%s\n",version);
     printf("Basic flags:\n");
     printf("\033[1m-i\033[0m info\n");
@@ -184,10 +190,15 @@ int help(){
 }
 
 int verbose(){
+    // To elaborate on this project
+    printf("\nThis program builds the base folder and file structure for your project\n");
+    printf("Languages supported:\n\tC/C++\n\tJava\n\tGO\n\n");
+    printf("Enter \033[1mscaffold --help\033[0m for further details");
     return 0;
 }
 
 int getCurretWorkingDir(char* pwd){
+    // Returns the directory in which the user is running their terminal
     getcwd(pwd, MAX_PATH-1);
     if(strlen(pwd) == 0){
         printf("Path length exceeded!\nTry running on different directory!");
