@@ -12,8 +12,8 @@ extern int MAX_DIR;
 
 void ccpp_gitignore(const char* const, const char* const, struct bit8colors);
 
-int _cScaffold_console(const char* const, struct bit8colors);
-int _cppScaffold_console(const char* const, struct bit8colors);
+int _cScaffold_console(const char* const, struct bit8colors, int);
+int _cppScaffold_console(const char* const, struct bit8colors, int);
 
 // Scaffolds c/cpp project takes the directory to be created, the type of project and ansi color object
 int ccppScaffold(const char* const currentDirectory, int flag, struct bit8colors colors){
@@ -23,20 +23,102 @@ int ccppScaffold(const char* const currentDirectory, int flag, struct bit8colors
         cpp_console
     };
 
+    enum compilers{// Preferred c/c++ compiler
+        gcc,
+        gpp,
+        clang,
+        clangpp
+    };
+
     FILE *fptr;
     char package_path[MAX_PATH];
+    int compiler_choice = -1;
+    int err;
 
-    // Checking if GCC exists
-    printf("Testing for GCC in path: \n");
-    fptr = popen("gcc --version", "r");
-    if(fptr == NULL){
-        printf("\033[38;5;%d;1mCannot find GCC path!\nExiting...\n\033[0m",colors.red);
-        return 0;
+    if(flag != ccpp_list){     
+        if(flag == c_console){
+            printf("Choose a compiler:\n\033[1m1\033[0m.GCC\n\033[1m2\033[0m.CLang\n\n::>");
+            err = scanf("%d",&compiler_choice);
+            if(!err || compiler_choice <= 0 || compiler_choice > 2){
+                printf("\033[38;5;%d;1mInvalid choice!\nEniting...\033[0m\n\n",colors.red);
+                return 0;
+            }
+            if(compiler_choice == 1) compiler_choice = gcc;
+            else compiler_choice = clang;
+            switch (compiler_choice)
+            {
+            case gcc:
+                // Checking if GCC exists
+                printf("Testing for GCC in path: \n");
+                fptr = popen("gcc --version", "r");
+                if(fptr == NULL){
+                    printf("\033[38;5;%d;1mCannot find GCC path!\nExiting...\n\033[0m",colors.red);
+                    return 0;
+                }
+                fgets(package_path, MAX_PATH, fptr);
+                pclose(fptr);
+                printf("%s\n",package_path);
+                printf("\033[38;5;%dmGCC available (-‿◦☀)\n\n\033[0m",colors.blue);
+                break;
+            case clang:
+                // Checking if CLang exists
+                printf("Testing for CLang in path: \n");
+                fptr = popen("clang --version", "r");
+                if(fptr == NULL){
+                    printf("\033[38;5;%d;1mCannot find CLang path!\nExiting...\n\033[0m",colors.red);
+                    return 0;
+                }
+                fgets(package_path, MAX_PATH, fptr);
+                pclose(fptr);
+                printf("%s\n",package_path);
+                printf("\033[38;5;%dmCLang available (-‿◦☀)\n\n\033[0m",colors.blue);
+                break;
+            default:
+                return 1;
+            }
+        }
+        if(flag == cpp_console){
+            printf("Choose a compiler:\n\033[1m1\033[0m.G++\n\033[1m2\033[0m.CLang++\n\n::>");
+            err = scanf("%d",&compiler_choice);
+            if(!err || compiler_choice <= 0 || compiler_choice > 2){
+                printf("\033[38;5;%d;1mInvalid choice!\nEniting...\033[0m\n\n",colors.red);
+                return 0;
+            }
+            if(compiler_choice == 1) compiler_choice = gpp;
+            else compiler_choice = clangpp;
+            switch (compiler_choice)
+            {
+            case gpp:
+                // Checking if G++ exists
+                printf("Testing for G++ in path: \n");
+                fptr = popen("g++ --version", "r");
+                if(fptr == NULL){
+                    printf("\033[38;5;%d;1mCannot find G++ path!\nExiting...\n\033[0m",colors.red);
+                    return 0;
+                }
+                fgets(package_path, MAX_PATH, fptr);
+                pclose(fptr);
+                printf("%s\n",package_path);
+                printf("\033[38;5;%dmG++ available (⌐■_■)\n\n\033[0m",colors.blue);
+                break;
+            case clangpp:
+                // Checking if CLang exists
+                printf("Testing for CLang++ in path: \n");
+                fptr = popen("clang++ --version", "r");
+                if(fptr == NULL){
+                    printf("\033[38;5;%d;1mCannot find CLang++ path!\nExiting...\n\033[0m",colors.red);
+                    return 0;
+                }
+                fgets(package_path, MAX_PATH, fptr);
+                pclose(fptr);
+                printf("%s\n",package_path);
+                printf("\033[38;5;%dmCLang++ available (⌐■_■)\n\n\033[0m",colors.blue);
+                break;
+            default:
+                return 1;
+            }
+        }
     }
-    fgets(package_path, MAX_PATH, fptr);
-    pclose(fptr);
-    printf("%s\n",package_path);
-    printf("\033[38;5;%dmGCC available (-‿◦☀)\n\n\033[0m",colors.blue);
 
     // Listing all the project types that can be made with c/c++
     if(flag == ccpp_list){
@@ -47,10 +129,10 @@ int ccppScaffold(const char* const currentDirectory, int flag, struct bit8colors
 
     // To build console project
     if(flag == c_console){
-        return(_cScaffold_console(currentDirectory, colors));
+        return(_cScaffold_console(currentDirectory, colors, compiler_choice));
     }
     if(flag == cpp_console){
-        return(_cppScaffold_console(currentDirectory, colors));
+        return(_cppScaffold_console(currentDirectory, colors, compiler_choice));
     }
 
     printf("\033[0m");
@@ -58,7 +140,7 @@ int ccppScaffold(const char* const currentDirectory, int flag, struct bit8colors
 }
 
 // Local function which is used to build c console project
-int _cScaffold_console(const char* const currentDirectory, struct bit8colors colors){
+int _cScaffold_console(const char* const currentDirectory, struct bit8colors colors, int compiler){
     FILE* fptr;
 
     char projname[MAX_NAME];
@@ -146,7 +228,8 @@ int _cScaffold_console(const char* const currentDirectory, struct bit8colors col
         strcat(projdir,"Makefile");
         fptr = fopen(projdir,"w");
         if(fptr != NULL){
-            fprintf(fptr, "CC = gcc\n\nBUILD_FLAGS = -O2 -Wall\n\nSOURCE_FILES = ./src/*.c\n\n");
+            if(compiler == 0) fprintf(fptr, "CC = gcc\n\nBUILD_FLAGS = -O2 -Wall\n\nSOURCE_FILES = ./src/*.c\n\n");
+            else fprintf(fptr, "CC = clang\n\nBUILD_FLAGS = -O2 -Wall\n\nSOURCE_FILES = ./src/*.c\n\n");
             fprintf(fptr, "BUILD_PATH = ./bin/%s\n\n",projname);
             fprintf(fptr, "build:\n\t@$(CC) $(BUILD_FLAGS) $(SOURCE_FILES) -o $(BUILD_PATH)\n\n");
             fprintf(fptr, "run: build\n\t@$(BUILD_PATH)\n\n");
@@ -176,7 +259,7 @@ int _cScaffold_console(const char* const currentDirectory, struct bit8colors col
 }
 
 // Local function which is used to build cpp console project
-int _cppScaffold_console(const char* const currentDirectory, struct bit8colors colors){
+int _cppScaffold_console(const char* const currentDirectory, struct bit8colors colors, int compiler){
     FILE* fptr;
 
     char projname[MAX_NAME];
@@ -263,7 +346,8 @@ int _cppScaffold_console(const char* const currentDirectory, struct bit8colors c
         strcat(projdir,"Makefile");
         fptr = fopen(projdir,"w");
         if(fptr != NULL){
-            fprintf(fptr, "CC = g++\n\nBUILD_FLAGS = -O2 -Wall\n\nSOURCE_FILES = ./src/*.cpp\n\n");
+            if(compiler == 1) fprintf(fptr, "CC = g++\n\nBUILD_FLAGS = -O2 -Wall\n\nSOURCE_FILES = ./src/*.cpp\n\n");
+            else fprintf(fptr, "CC = clang++\n\nBUILD_FLAGS = -O2 -Wall\n\nSOURCE_FILES = ./src/*.cpp\n\n");            
             fprintf(fptr, "BUILD_PATH = ./bin/%s\n\n",projname);
             fprintf(fptr, "build:\n\t@$(CC) $(BUILD_FLAGS) $(SOURCE_FILES) -o $(BUILD_PATH)\n\n");
             fprintf(fptr, "run: build\n\t@$(BUILD_PATH)\n\n");

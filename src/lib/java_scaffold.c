@@ -24,17 +24,19 @@ int javaScaffold(const char* const currentDirectory, int flag, struct bit8colors
     FILE *fptr;
     char package_path[MAX_PATH];
 
-    // Checking if jdk exists
-    printf("Testing for JDK in path: \n");
-    fptr = popen("java --version", "r");
-    if(fptr == NULL){
-        printf("\033[38;5;%d;1mCannot find JDK path!\nExiting...\n\033[0m",colors.red);
-        return 0;
+    if(flag != java_list){
+        // Checking if jdk exists
+        printf("Testing for JDK in path: \n");
+        fptr = popen("java --version", "r");
+        if(fptr == NULL){
+            printf("\033[38;5;%d;1mCannot find JDK path!\nExiting...\n\033[0m",colors.red);
+            return 0;
+        }
+        fgets(package_path, MAX_PATH, fptr);
+        pclose(fptr);
+        printf("%s\n",package_path);
+        printf("\033[38;5;%dmJDK available ┗(^o^ )┓三\n\n\033[0m",colors.green);
     }
-    fgets(package_path, MAX_PATH, fptr);
-    pclose(fptr);
-    printf("%s\n",package_path);
-    printf("\033[38;5;%dmJDK available ┗(^o^ )┓三\n\n\033[0m",colors.green);
 
     // Listing all the project types that can be made with java
     if(flag == java_list){

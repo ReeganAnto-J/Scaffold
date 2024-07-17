@@ -24,17 +24,19 @@ int goScaffold(const char* const currentDirectory, int flag, struct bit8colors c
     FILE *fptr;
     char package_path[MAX_PATH];
 
-    // Checking if GO exists
-    printf("Testing for GO in path: \n");
-    fptr = popen("go version", "r");
-    if(fptr == NULL){
-        printf("\033[38;5;%d;1mCannot find GO path!\nExiting...\n\033[0m",colors.red);
-        return 0;
+    if(flag != go_list){
+        // Checking if GO exists
+        printf("Testing for GO in path: \n");
+        fptr = popen("go version", "r");
+        if(fptr == NULL){
+            printf("\033[38;5;%d;1mCannot find GO path!\nExiting...\n\033[0m",colors.red);
+            return 0;
+        }
+        fgets(package_path, MAX_PATH, fptr);
+        pclose(fptr);
+        printf("%s\n",package_path);
+        printf("\033[38;5;%dmGO available ⊹⋛⋋( ՞ਊ ՞)⋌⋚⊹\n\n\033[0m",colors.cyan);
     }
-    fgets(package_path, MAX_PATH, fptr);
-    pclose(fptr);
-    printf("%s\n",package_path);
-    printf("\033[38;5;%dmGO available ⊹⋛⋋( ՞ਊ ՞)⋌⋚⊹\n\n\033[0m",colors.cyan);
 
     // Listing all the project types that can be made with go
     if(flag == go_list){
