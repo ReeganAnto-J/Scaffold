@@ -32,8 +32,13 @@ int goScaffold(const char* const currentDirectory, int flag, struct bit8colors c
             printf("\033[38;5;%d;1mCannot find GO path!\nExiting...\n\033[0m",colors.red);
             return 0;
         }
+        package_path[0] = '\0';
         fgets(package_path, MAX_PATH, fptr);
         pclose(fptr);
+        if(strlen(package_path) == 0){
+            printf("\033[38;5;%d;1mCannot find GO path!\nExiting...\n\033[0m",colors.red);
+            return 0;
+        }
         printf("%s\n",package_path);
         printf("\033[38;5;%dmGO available ⊹⋛⋋( ՞ਊ ՞)⋌⋚⊹\n\n\033[0m",colors.cyan);
     }
@@ -139,22 +144,26 @@ int _goScaffold_console(const char* const currentDirectory, struct bit8colors co
     fptr = popen("make --version", "r");
     if(fptr == NULL){
         printf("\033[38;5;%d;1mCannot find make path!\nSkipping make initialization...\n\n\033[0m",colors.red);
-        pclose(fptr);
     } else {
+        packagePath[0] = '\0';
         fgets(packagePath, MAX_PATH, fptr);
         pclose(fptr);
-        printf("%s",packagePath);
-        printf("Make available, creating makefile... \n");
-        strcpy(projdir, tmp);
-        strcat(projdir,"Makefile");
-        fptr = fopen(projdir,"w");
-        if(fptr != NULL){
-            fprintf(fptr, "SOURCE_FILES = ./src/*.go\n\n");
-            fprintf(fptr, "run:\n\t@go run $(SOURCE_FILES)\n\n");
-            fclose(fptr);
-            make_ready = 1;
-            printf("\033[38;5;%dmDone\n\n\033[0m",colors.green);
-        } else printf("\033[38;5;%d;1mUnable to build makefile!\nSkipping...\n\n\033[0m", colors.red);
+        if(strlen(packagePath) == 0){
+            printf("\033[38;5;%d;1mCannot find make path!\nSkipping make initialization...\n\n\033[0m",colors.red);
+        } else {
+            printf("%s",packagePath);
+            printf("Make available, creating makefile... \n");
+            strcpy(projdir, tmp);
+            strcat(projdir,"Makefile");
+            fptr = fopen(projdir,"w");
+            if(fptr != NULL){
+                fprintf(fptr, "SOURCE_FILES = ./src/*.go\n\n");
+                fprintf(fptr, "run:\n\t@go run $(SOURCE_FILES)\n\n");
+                fclose(fptr);
+                make_ready = 1;
+                printf("\033[38;5;%dmDone\n\n\033[0m",colors.green);
+            } else printf("\033[38;5;%d;1mUnable to build makefile!\nSkipping...\n\n\033[0m", colors.red);
+        }
     }
 
     printf("\033[1mPerforming final tests on project...\033[0m\n");
@@ -195,31 +204,34 @@ void go_gitignore(const char* const projname, const char* const tmp, struct bit8
     fptr = popen("git --version", "r");
     if(fptr == NULL){
         printf("\033[38;5;%d;1mCannot find git path!\nSkipping git initialization...\n\n\033[0m",colors.red);
-        pclose(fptr);
-    } else {
-        fgets(packagePath, MAX_PATH, fptr);
-        pclose(fptr);
-        printf("%s",packagePath);
-        printf("Git available, proceeding initialization... \n");
-        strcpy(packagePath,"cd ./");
-        strcat(packagePath,projname);
-        strcat(packagePath,";git init");
-        err = system(packagePath);
-        if(!err){
-            printf("Adding gitignore... \n");
-            strcpy(projdir, tmp);
-            strcat(projdir,".gitignore");
-            fptr = fopen(projdir,"w");
-            if(fptr != NULL){
-                fprintf(fptr, "# Binaries for programs and plugins\n*.exe\n*.exe~\n*.dll\n*.so\n*.dylib\n\n");
-                fprintf(fptr, "# Test binary, built with `go test -c`\n*.test\n\n");
-                fprintf(fptr, "# Output of the go coverage tool, specifically when used with LiteIDE\n*.out\n\n");
-                fprintf(fptr, "# Dependency directories (remove the comment below to include it)\n# vendor/\n\n");
-                fprintf(fptr, "# Go workspace file\ngo.work\ngo.work.sum\n\n");
-                fprintf(fptr, "# env file\n.env");
-                fclose(fptr);
-                printf("\033[38;5;%dmDone\n\n\033[0m",colors.green);
-            } else printf("\033[38;5;%d;1mUnable to add gitignore!\nSkipping...\n\n\033[0m", colors.red);
-        } else  printf("\033[38;5;%d;1mUnable to initialize git!\nSkipping...\n\n\033[0m",colors.red);
+        return;
     }
+    fgets(packagePath, MAX_PATH, fptr);
+    pclose(fptr);
+    if(strlen(packagePath) == 0){
+        printf("\033[38;5;%d;1mCannot find git path!\nSkipping git initialization...\n\n\033[0m",colors.red);
+        return;
+    }
+    printf("%s",packagePath);
+    printf("Git available, proceeding initialization... \n");
+    strcpy(packagePath,"cd ./");
+    strcat(packagePath,projname);
+    strcat(packagePath,";git init");
+    err = system(packagePath);
+    if(!err){
+        printf("Adding gitignore... \n");
+        strcpy(projdir, tmp);
+        strcat(projdir,".gitignore");
+        fptr = fopen(projdir,"w");
+        if(fptr != NULL){
+            fprintf(fptr, "# Binaries for programs and plugins\n*.exe\n*.exe~\n*.dll\n*.so\n*.dylib\n\n");
+            fprintf(fptr, "# Test binary, built with `go test -c`\n*.test\n\n");
+            fprintf(fptr, "# Output of the go coverage tool, specifically when used with LiteIDE\n*.out\n\n");
+            fprintf(fptr, "# Dependency directories (remove the comment below to include it)\n# vendor/\n\n");
+            fprintf(fptr, "# Go workspace file\ngo.work\ngo.work.sum\n\n");
+            fprintf(fptr, "# env file\n.env");
+            fclose(fptr);
+            printf("\033[38;5;%dmDone\n\n\033[0m",colors.green);
+        } else printf("\033[38;5;%d;1mUnable to add gitignore!\nSkipping...\n\n\033[0m", colors.red);
+    } else  printf("\033[38;5;%d;1mUnable to initialize git!\nSkipping...\n\n\033[0m",colors.red);
 }

@@ -24,5 +24,5 @@ deploy: build
 	@$(RELEASE_PATH) $(EXECUTION_FLAGS)
 
 clean:
-	rm $(DEBUG_PATH)
-	rm $(RELEASE_PATH)
+	rm -f $(DEBUG_PATH)
+	rm -f $(RELEASE_PATH)
